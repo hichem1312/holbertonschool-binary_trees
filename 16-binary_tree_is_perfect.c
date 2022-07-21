@@ -8,53 +8,46 @@ size_t binary_tree_height(const binary_tree_t *tree)
 {
 	size_t height_i = 0;
 	size_t height_j = 0;
-
-	if (tree != NULL)
-	{
-	height_i = tree->left ? 1 + binary_tree_height(tree->left) : 0;
-	height_j = tree->right ? 1 + binary_tree_height(tree->right) : 0;
-	}
-	return (height_i > height_j ? height_i : height_j);
-}
-/**
- * binary_tree_balance - balance tree
- * @tree: a pointer
- * Return: value
- */
-int binary_tree_balance(const binary_tree_t *tree)
-{
-	if (tree == NULL)
+	if (!tree || (!tree->right && !tree->left))
 		return (0);
-	if ((tree->left == NULL) && (tree->right))
-		return (-1 - binary_tree_height(tree->right));
-	if ((tree->left) && (tree->right == NULL))
-		return (1 + binary_tree_height(tree->right));
-	else
-		return (binary_tree_height(tree->left) - binary_tree_height(tree->right));
-}
-/**
- * binary_tree_is_full - test is the tree is full or not
- * @tree: a pointer
- * Return: value
- */
-int binary_tree_is_full(const binary_tree_t *tree)
-{
+	height_i = binary_tree_height(tree->left);
+	height_j = binary_tree_height(tree->right);
 
-	if (tree == NULL)
-		return (0);
-	return (binary_tree_is_full(tree->left) - binary_tree_is_full(tree->right)
-	 == 0 ? 1 : 0);
+	if (height_i >= height_j)
+		return (height_i + 1);
+
+	return (height_j + 1);
 }
+
 /**
- * binary_tree_is_perfect - test is the tree is perfect or not
- * @tree: a pointer
- * Return: value
- */
+ * check_is_perfect - check if tree is perfect
+ * @node: pointer
+ * @height: height of tree
+ * @level: current level
+ * Return: 1
+ **/
+int check_is_perfect(const binary_tree_t *node, size_t h, size_t level)
+{
+	if (!node->right && !node->left)
+		return (h == level);
+
+	if (!node->right || !node->left)
+		return (0);
+
+	return (is_perfect(node->left, h, level + 1) &&
+			is_perfect(node->right, h, level + 1));
+}
+
+/**
+ * binary_tree_is_perfect - check
+ * @tree: pointer
+ * Return: 1
+ **/
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
+	size_t height_tree = binary_tree_height(tree);
 
 	if (tree == NULL)
 		return (0);
-	return (binary_tree_is_full(tree) == 1 && binary_tree_balance(tree) == 0
-	? 1 : 0);
+	return (check_is_perfect(tree, height_tree, 0));
 }

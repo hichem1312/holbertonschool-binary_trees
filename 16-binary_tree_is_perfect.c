@@ -34,8 +34,8 @@ int check_is_perfect(const binary_tree_t *node, size_t h, size_t level)
 	if (!node->right || !node->left)
 		return (0);
 
-	return (is_perfect(node->left, h, level + 1) &&
-			is_perfect(node->right, h, level + 1));
+	return (check_is_perfect(node->left, h, level + 1) &&
+			check_is_perfect(node->right, h, level + 1));
 }
 
 /**
